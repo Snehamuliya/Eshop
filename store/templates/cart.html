@@ -1,0 +1,86 @@
+
+{% extends 'header.html' %}
+{% block content %}
+{% load cart %}
+{% load custome_filter %}
+<div class="container">
+    <div class="border rounded p-4 m-4">
+<h1>Your cart</h1>
+    <table class="table">
+        <thead>
+        <th>sno</th>
+        <th>image</th>
+        <th>name</th>
+        <th>price</th>
+        <th>quantity</th>
+        <th>Total</th>
+        </thead>
+        <tbody>
+        {% for product in products %}
+        <tr>
+
+            <td>{{forloop.counter}}</td>
+            <td><img class="rounded-circle" src=" {{product.image.url}}"  style="height:90px"></td>
+            <td>{{product.name}}</td>
+            <td>{{product.price|currency}}</td>
+            <td>{{product|cart_quantity:request.session.cart}}</td>
+            <td>{{product|price_total:request.session.cart|currency}}</td>
+        </tr>
+        {% endfor %}
+        </tbody>
+        <tfoot>
+        <tr>
+            <th colspan="4"></th>
+            <th class="text-right">Total</th>
+            <th>{{products|total_cart_price:request.session.cart|currency}}</th>
+        </tr>
+        </tfoot>
+    </table>
+
+        <div class="m-3 p-3">
+            <a href="" class="btn btn-outline-info border rounded col-lg-3 float-right" data-toggle="modal" data-target="#exampleModal">checkout</a>
+        </div>
+        </div>
+</div>
+
+<!-- Button trigger modal -->
+
+<!-- Modal -->
+<div class="modal fade" id="exampleModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="exampleModalLabel">Checkout form</h5>
+        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+          <span aria-hidden="true">&times;</span>
+        </button>
+      </div>
+      <div class="modal-body">
+          <div class="m-2 p-3"><form action="/checkout" method="post">
+             {% csrf_token %}
+
+
+               <div class="form-group">
+            <label for="example-text-input1" class="col-form-label">Address <span class="star" style="color: red">*</span></label>
+            <input class="form-control form-control-sm" type="text" id="example-text-input1" placeholder="Address" pattern="([a-zA-Z] ?)+[a-zA-Z]" value="{{values.lastname}}" name="address" >
+          </div>
+
+               <div class="form-group">
+            <label for="example-text-input2" class="col-form-label">phone <span class="star" style="color: red">*</span></label>
+            <input class="form-control form-control-sm" type="number" id="example-text-input2" placeholder="Mobile"  value="{{values.lastname}}" name="no" >
+          </div>
+
+
+
+          <input type="submit" value="checkout" class="btn btn-outline-info col-lg-6">
+          </form> </div>
+        ...
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+{% endblock %}
